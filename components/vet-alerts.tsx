@@ -184,14 +184,21 @@ export default function VetAlerts({ detailed = false, limit }: VetAlertsProps) {
     })
   }
 
-  const renderAlertCard = (alert: any) => {
+  // Add animations to the vet alerts
+  const renderAlertCard = (alert: any, index: number) => {
     return (
-      <Card key={alert.id} className="mb-4 overflow-hidden">
+      <Card
+        key={alert.id}
+        className="mb-4 overflow-hidden animate-slide-in"
+        style={{ animationDelay: `${index * 0.1}s` }}
+      >
         <CardContent className="p-0">
           <div className="p-4">
             <div className="flex items-start justify-between">
               <div className="flex items-start space-x-4">
-                <div className={`p-2 rounded-full ${alert.severity === "critical" ? "bg-red-100" : "bg-amber-100"}`}>
+                <div
+                  className={`p-2 rounded-full ${alert.severity === "critical" ? "bg-red-100 animate-pulse-slow" : "bg-amber-100"}`}
+                >
                   <alert.icon
                     className={`h-5 w-5 ${alert.severity === "critical" ? "text-red-500" : "text-amber-500"}`}
                   />
@@ -199,7 +206,10 @@ export default function VetAlerts({ detailed = false, limit }: VetAlertsProps) {
                 <div>
                   <div className="flex items-center space-x-2">
                     <h4 className="font-medium">{alert.title}</h4>
-                    <Badge variant={alert.severity === "critical" ? "destructive" : "outline"}>
+                    <Badge
+                      variant={alert.severity === "critical" ? "destructive" : "outline"}
+                      className={alert.severity === "critical" ? "animate-pulse-slow" : ""}
+                    >
                       {alert.severity === "critical" ? "Critical" : "Warning"}
                     </Badge>
                     {alert.status === "resolved" && (
@@ -221,13 +231,13 @@ export default function VetAlerts({ detailed = false, limit }: VetAlertsProps) {
 
               {detailed && (
                 <div className="flex space-x-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 animate-scale">
                     <MessageCircle className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 animate-scale">
                     <Phone className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 animate-scale">
                     <Video className="h-4 w-4" />
                   </Button>
                 </div>
@@ -248,7 +258,7 @@ export default function VetAlerts({ detailed = false, limit }: VetAlertsProps) {
                   <div className="flex items-center space-x-3">
                     {alert.assignedVet ? (
                       <>
-                        <Avatar className="h-8 w-8">
+                        <Avatar className="h-8 w-8 animate-float">
                           <AvatarImage src={alert.assignedVet.avatar || "/placeholder.svg"} />
                           <AvatarFallback>{alert.assignedVet.name.charAt(0)}</AvatarFallback>
                         </Avatar>
@@ -258,7 +268,12 @@ export default function VetAlerts({ detailed = false, limit }: VetAlertsProps) {
                         </div>
                       </>
                     ) : (
-                      <Button variant="outline" size="sm" onClick={() => handleAssignVet(alert.id)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleAssignVet(alert.id)}
+                        className="animate-scale"
+                      >
                         Assign Vet
                       </Button>
                     )}
@@ -268,7 +283,7 @@ export default function VetAlerts({ detailed = false, limit }: VetAlertsProps) {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700"
+                      className="text-green-600 border-green-200 hover:bg-green-50 hover:text-green-700 animate-scale"
                       onClick={() => handleResolveAlert(alert.id)}
                     >
                       <CheckCircle2 className="mr-1 h-4 w-4" />
@@ -276,7 +291,7 @@ export default function VetAlerts({ detailed = false, limit }: VetAlertsProps) {
                     </Button>
                   ) : (
                     <div className="flex items-center text-sm text-green-600">
-                      <CheckCircle2 className="mr-1 h-4 w-4" />
+                      <CheckCircle2 className="mr-1 h-4 w-4 animate-float" />
                       Resolved
                     </div>
                   )}
@@ -337,7 +352,7 @@ export default function VetAlerts({ detailed = false, limit }: VetAlertsProps) {
           <p className="text-sm text-muted-foreground">All animals are healthy and within normal parameters.</p>
         </div>
       ) : (
-        displayAlerts.map(renderAlertCard)
+        displayAlerts.map((alert, index) => renderAlertCard(alert, index))
       )}
 
       {!detailed && alerts.length > limit! && (

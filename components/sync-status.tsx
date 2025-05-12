@@ -16,12 +16,12 @@ export default function SyncStatus({ status }: SyncStatusProps) {
           <div className="flex items-center">
             {status === "online" && (
               <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
-                <Wifi className="h-3 w-3 mr-1" />
+                <Wifi className="h-3 w-3 mr-1 animate-pulse-slow" />
                 <span>Online</span>
               </Badge>
             )}
             {status === "offline" && (
-              <Badge variant="destructive">
+              <Badge variant="destructive" className="animate-pulse-slow">
                 <WifiOff className="h-3 w-3 mr-1" />
                 <span>Offline</span>
               </Badge>

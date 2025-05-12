@@ -197,16 +197,20 @@ export default function HealthMetricsChart({ detailed = false }: HealthMetricsCh
   const renderDetailedMetrics = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {["temperature", "heartRate", "activity", "stress"].map((metric) => {
+        {["temperature", "heartRate", "activity", "stress"].map((metric, index) => {
           const color = getMetricColor(metric)
           const lastValue = data.length ? data[data.length - 1][metric] : 0
 
           return (
-            <Card key={metric} className="overflow-hidden">
+            <Card
+              key={metric}
+              className="overflow-hidden animate-fade-in"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
               <CardContent className="p-0">
                 <div className="p-4 flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <div className="p-2 rounded-full" style={{ backgroundColor: `${color}20` }}>
+                    <div className="p-2 rounded-full animate-pulse-slow" style={{ backgroundColor: `${color}20` }}>
                       {getMetricIcon(metric)}
                     </div>
                     <div>
@@ -237,7 +241,7 @@ export default function HealthMetricsChart({ detailed = false }: HealthMetricsCh
                         stroke={color}
                         strokeWidth={2}
                         fill={`url(#gradient-${metric})`}
-                        animationDuration={500}
+                        animationDuration={800}
                       />
                     </AreaChart>
                   </ResponsiveContainer>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
@@ -130,12 +130,31 @@ export default function LivestockMap({ detailed = false }: LivestockMapProps) {
   const [showLabels, setShowLabels] = useState(detailed)
   const [selectedAnimal, setSelectedAnimal] = useState<string | null>(null)
   const [mapZoom, setMapZoom] = useState(detailed ? 15 : 14)
+  const [alertedAnimals, setAlertedAnimals] = useState<Set<string>>(new Set())
 
+  // Handle animal click with useCallback to avoid recreating on each render
+  const handleAnimalClick = useCallback(
+    (id: string) => {
+      setSelectedAnimal(id === selectedAnimal ? null : id)
+
+      const animal = animals.find((a) => a.id === id)
+      if (animal) {
+        toast({
+          title: `${animal.type.charAt(0).toUpperCase() + animal.type.slice(1)} ${animal.id}`,
+          description: `Status: ${animal.status === "alert" ? "Outside boundary" : "Normal"} | Battery: ${animal.batteryLevel}%`,
+        })
+      }
+    },
+    [animals, selectedAnimal, toast],
+  )
+
+  // Initialize animals
   useEffect(() => {
-    // Initialize with random data
     setAnimals(generateLocationData())
+  }, [])
 
-    // Update positions every 5 seconds to simulate movement
+  // Update positions and handle alerts
+  useEffect(() => {
     const interval = setInterval(() => {
       setAnimals((prev) => {
         return prev.map((animal) => {
@@ -151,12 +170,27 @@ export default function LivestockMap({ detailed = false }: LivestockMapProps) {
 
           // Check if animal is outside geo-fence
           const isOutsideGeofence = Math.random() > 0.98
+          const newStatus = isOutsideGeofence ? "alert" : animal.status
 
+          // If status changed to alert and hasn't been alerted before, show toast
           if (isOutsideGeofence && animal.status !== "alert") {
-            toast({
-              title: "Geo-fence Alert",
-              description: `${animal.type.charAt(0).toUpperCase() + animal.type.slice(1)} ${animal.id} has left the designated area.`,
-              variant: "destructive",
+            setAlertedAnimals((prev) => {
+              // Only show toast if this animal hasn't been alerted before
+              if (!prev.has(animal.id)) {
+                setTimeout(() => {
+                  toast({
+                    title: "Geo-fence Alert",
+                    description: `${animal.type.charAt(0).toUpperCase() + animal.type.slice(1)} ${animal.id} has left the designated area.`,
+                    variant: "destructive",
+                  })
+                }, 0)
+
+                // Add to alerted set
+                const newSet = new Set(prev)
+                newSet.add(animal.id)
+                return newSet
+              }
+              return prev
             })
           }
 
@@ -167,7 +201,7 @@ export default function LivestockMap({ detailed = false }: LivestockMapProps) {
               lng: animal.position.lng + lngChange,
             },
             direction: newDirection,
-            status: isOutsideGeofence ? "alert" : animal.status,
+            status: newStatus,
             lastUpdate: new Date().toISOString(),
           }
         })
@@ -177,18 +211,6 @@ export default function LivestockMap({ detailed = false }: LivestockMapProps) {
     return () => clearInterval(interval)
   }, [toast])
 
-  const handleAnimalClick = (id: string) => {
-    setSelectedAnimal(id === selectedAnimal ? null : id)
-
-    const animal = animals.find((a) => a.id === id)
-    if (animal) {
-      toast({
-        title: `${animal.type.charAt(0).toUpperCase() + animal.type.slice(1)} ${animal.id}`,
-        description: `Status: ${animal.status === "alert" ? "Outside boundary" : "Normal"} | Battery: ${animal.batteryLevel}%`,
-      })
-    }
-  }
-
   const getAnimalMarkerStyle = (animal: any) => {
     const baseStyle =
       "absolute rounded-full transform -translate-x-1/2 -translate-y-1/2 border-2 flex items-center justify-center"
@@ -196,8 +218,9 @@ export default function LivestockMap({ detailed = false }: LivestockMapProps) {
     const colorClass =
       animal.status === "alert" ? "bg-red-500 border-red-700 geo-fence-alert" : "bg-primary border-primary-foreground"
     const selectedClass = selectedAnimal === animal.id ? "ring-2 ring-offset-2 ring-secondary" : ""
+    const animationClass = animal.status === "alert" ? "animate-bounce-slow" : "animate-float"
 
-    return `${baseStyle} ${sizeClass} ${colorClass} ${selectedClass}`
+    return `${baseStyle} ${sizeClass} ${colorClass} ${selectedClass} ${animationClass}`
   }
 
   const getAnimalPosition = (animal: any) => {
@@ -313,7 +336,10 @@ export default function LivestockMap({ detailed = false }: LivestockMapProps) {
           variant="secondary"
           size="icon"
           className="h-8 w-8 rounded-full bg-background/80 shadow-md"
-          onClick={() => setAnimals(generateLocationData())}
+          onClick={() => {
+            setAnimals(generateLocationData())
+            setAlertedAnimals(new Set())
+          }}
         >
           <RefreshCw className="h-4 w-4" />
         </Button>
@@ -356,7 +382,10 @@ export default function LivestockMap({ detailed = false }: LivestockMapProps) {
 
           <div className="flex items-center space-x-2">
             <AlertTriangle className="h-4 w-4 text-destructive" />
-            <span className="text-sm text-destructive font-medium">1 animal outside boundary</span>
+            <span className="text-sm text-destructive font-medium">
+              {animals.filter((a) => a.status === "alert").length} animal
+              {animals.filter((a) => a.status === "alert").length !== 1 ? "s" : ""} outside boundary
+            </span>
             <Badge variant="destructive" className="ml-auto">
               Alert
             </Badge>

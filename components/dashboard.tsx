@@ -101,7 +101,7 @@ export default function Dashboard() {
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">Livestock Monitor</h2>
+            <h2 className="text-3xl font-bold tracking-tight animate-float">PashuPalak</h2>
             <p className="text-muted-foreground">Advanced livestock management with IoT technology</p>
           </div>
 
@@ -165,37 +165,37 @@ export default function Dashboard() {
 
           <TabsContent value="overview" className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card className="chart-container">
+              <Card className="chart-container animate-fade-in" style={{ animationDelay: "0.1s" }}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Livestock</CardTitle>
-                  <Cow className="h-4 w-4 text-muted-foreground" />
+                  <Cow className="h-4 w-4 text-muted-foreground animate-float" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">247</div>
                   <p className="text-xs text-muted-foreground">+12 since last month</p>
                   <div className="mt-4 flex items-center space-x-2 text-sm">
                     <div className="flex items-center">
-                      <div className="mr-1 h-3 w-3 rounded-full bg-primary"></div>
+                      <div className="mr-1 h-3 w-3 rounded-full bg-primary animate-pulse-slow"></div>
                       <span>Cattle: 84</span>
                     </div>
                     <div className="flex items-center">
-                      <div className="mr-1 h-3 w-3 rounded-full bg-secondary"></div>
+                      <div className="mr-1 h-3 w-3 rounded-full bg-secondary animate-pulse-slow"></div>
                       <span>Others: 163</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="chart-container">
+              <Card className="chart-container animate-fade-in" style={{ animationDelay: "0.2s" }}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Health Alerts</CardTitle>
-                  <Heart className="h-4 w-4 text-destructive" />
+                  <Heart className="h-4 w-4 text-destructive animate-scale" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">7</div>
                   <p className="text-xs text-muted-foreground">-3 since yesterday</p>
                   <div className="mt-4">
-                    <Badge variant="destructive" className="mr-1">
+                    <Badge variant="destructive" className="mr-1 animate-pulse-slow">
                       Critical: 2
                     </Badge>
                     <Badge variant="outline" className="mr-1">
@@ -205,28 +205,28 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="chart-container">
+              <Card className="chart-container animate-fade-in" style={{ animationDelay: "0.3s" }}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Productivity</CardTitle>
-                  <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                  <BarChart3 className="h-4 w-4 text-muted-foreground animate-float" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">92%</div>
                   <p className="text-xs text-muted-foreground">+4% from last week</p>
-                  <Progress value={92} className="mt-4" />
+                  <Progress value={92} className="mt-4 animate-glow" />
                 </CardContent>
               </Card>
 
-              <Card className="chart-container">
+              <Card className="chart-container animate-fade-in" style={{ animationDelay: "0.4s" }}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Geo-fence Status</CardTitle>
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  <MapPin className="h-4 w-4 text-muted-foreground animate-bounce-slow" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">Secure</div>
                   <p className="text-xs text-muted-foreground">1 alert in the last 24h</p>
                   <div className="mt-4 flex items-center space-x-2">
-                    <div className="h-3 w-3 rounded-full bg-green-500"></div>
+                    <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse-slow"></div>
                     <span className="text-sm">All boundaries active</span>
                   </div>
                 </CardContent>
